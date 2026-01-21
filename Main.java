@@ -48,6 +48,8 @@ public class Main extends SimpleApplication {
 	 legoBlue.node.setLocalTranslation(-8f, 0, 0); 
 	 //AssemblyStation assemblyStation = new AssemblyStation(assetManager,rootNode,5, -11);
 	 //rootNode.attachChild(assemblyStation.node);
+	 //RobotArm robotArm = new RobotArm(assetManager, rootNode);
+	 //rootNode.attachChild(robotArm.node);
 	 
 	 
  }
