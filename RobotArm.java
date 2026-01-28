@@ -21,7 +21,8 @@ public class RobotArm {
 	Box xArmShape;
 	Box yArmShape;
 	Box tooltipShape;
-	
+	private Vector3f targetLocation; // välietappi
+	float step = 0.1f; // etäisyys akselia kohden mikä liikutaan yhden syklin aikana
 	
 	private Vector3f targetLocation; // välietappi
 	float step = 0.1f; // etäisyys akselia kohden mikä liikutaan yhden syklin aikana
