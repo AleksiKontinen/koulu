@@ -5,12 +5,12 @@ import com.jme3.math.Vector3f;
 public class Trajectory {
 	 ArrayList<Vector3f> points;
 	 
-	 int index; // ‘points’ listan indeksi
-	 int size; // kuinka monta waypointtia ‘points’ listassa on
+	 int index = 0; // ‘points’ listan indeksi
+	 int size = 0; // kuinka monta waypointtia ‘points’ listassa on
 
 	 // alustaa yllämainitut points ja index muuttujat
 	 public Trajectory() {
-		 points = new ArrayList<Vector3f>(size);
+		 points = new ArrayList<Vector3f>(10);
 		 index = 0;
 		  
 	 }
@@ -28,11 +28,11 @@ public class Trajectory {
 
 	 // palauttaa indexin kohdalla olevan pisteen tai null jos ei enää pisteitä
 	 public Vector3f nextPoint() {
-		 if (index > size) {
+		 if (index >= points.size()) {
 			 return null;
 		 }
-		 return points.get(index);
-		 
+		 index++;
+		 return points.get(index-1);
 		 
 	 }
 

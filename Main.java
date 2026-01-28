@@ -18,7 +18,11 @@ public class Main extends SimpleApplication {
  Main app = new Main();
  app.start();
  }
+ 
  public static float floorHeight = -15;
+ AssemblyStation assemblyStation;
+ //Trajectory trajectory;
+ 
  @Override
  public void simpleInitApp() {
 	 flyCam.setMoveSpeed(10);
@@ -28,11 +32,17 @@ public class Main extends SimpleApplication {
 	 lamp_light.setPosition(new Vector3f(2f, 8.0f, 10.0f));
 	 rootNode.addLight(lamp_light);
 	 
+	 assemblyStation = new AssemblyStation(assetManager,rootNode,5, -11);
+	 rootNode.attachChild(assemblyStation.node);
+	 //RobotArm robotArm = new RobotArm(assetManager, rootNode);
+	 //rootNode.attachChild(robotArm.node);
+	 assemblyStation.initTestMove(new Vector3f(0,0,-5));
+	 //assemblyStation.move();
  }
  @Override
  public void simpleUpdate(float tpf) {
  //TODO: add update code
-	 Lego legoGreen = new Lego(assetManager,"green");
+	/* Lego legoGreen = new Lego(assetManager,"green");
 	 Lego legoRed = new Lego(assetManager,"red");
 	 Lego legoPink = new Lego(assetManager,"pink");
 	 Lego legoYellow = new Lego(assetManager,"yellow");
@@ -45,11 +55,8 @@ public class Main extends SimpleApplication {
 	 legoGreen.node.setLocalTranslation(8f, 0, 0); 
 	 legoRed.node.setLocalTranslation(4f, 0, 0); 
 	 legoYellow.node.setLocalTranslation(-4f, 0, 0); 
-	 legoBlue.node.setLocalTranslation(-8f, 0, 0); 
-	 //AssemblyStation assemblyStation = new AssemblyStation(assetManager,rootNode,5, -11);
-	 //rootNode.attachChild(assemblyStation.node);
-	 //RobotArm robotArm = new RobotArm(assetManager, rootNode);
-	 //rootNode.attachChild(robotArm.node);
+	 legoBlue.node.setLocalTranslation(-8f, 0, 0); */
+	 assemblyStation.move();
 	 
 	 
  }
