@@ -51,7 +51,7 @@ public class AssemblyStation {
 		trajectory.addPoint(v1);
 		
 		// toka välietappi max korkeuteen destination ylle
-		Vector3f v2 = destination;
+		Vector3f v2 = destination.clone();
 		v2.setY(maxHeight);
 		trajectory.addPoint(v2);
 		
@@ -81,6 +81,8 @@ public class AssemblyStation {
 				moving = true;
 				return true;
 			}
+					
+					
 		}
 	}
 	
