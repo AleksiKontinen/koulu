@@ -3,6 +3,7 @@ import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
@@ -11,8 +12,11 @@ public class Lego {
  Node node = new Node();
  Geometry geom;
  Box box;
+ String legoColor;
+ Vector3f location;
  
  public Lego(AssetManager assetManager, String color) {
+ legoColor = color;
  box = new Box(0.8f, 0.2f, 0.4f);
  geom = new Geometry("Box", box);
  node.attachChild(geom);
@@ -38,6 +42,7 @@ public class Lego {
  }
  
  mat.setColor("Diffuse",c);
+ 
  geom.setMaterial(mat);
  for (int i = 0; i < 8; i++) {
 	 Cylinder cyl = new Cylinder(20, 20, 0.1f, 0.1f, true);

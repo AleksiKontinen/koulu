@@ -16,7 +16,9 @@ public class AssemblyStation {
 	Box box;
 	Trajectory trajectory;
 	RobotArm assemblyArm;
-	
+	float x;
+    float z;
+    
 	int yExtent = 6;
 	float maxHeight = 4; // max korkeus reitin välietapeille
 	boolean moving = false; // true jos matkalla seuraavaan välietappiin
@@ -85,5 +87,41 @@ public class AssemblyStation {
 					
 		}
 	}
+	
+	float legoSpacingX = 2; // legojen slottipaikkojen etäisyys x-suuntaan
+	float legoSpacingZ = 2; // legojen slottipaikkojen etäisyys z-suuntaan
+	// kokoonpanoasemalla on slotteja, joiden indeksi on kokonaisluku
+	// tämä palauttaa slotin 3D koordinaatit
+	public Vector3f slotPosition(int slot) {
+	 // vain osa asemasta on varattu tähän tarkoitukseen. Sen koko on 16x12
+		int rowSize = (int)((16)/legoSpacingX);
+		int columnSize = (int)((12)/legoSpacingZ);
+		int rowIndex = slot % rowSize;
+		float xOffset = (rowIndex-1) * legoSpacingX;
+		int columnIndex = slot / rowSize;
+		float zOffset = (columnIndex + 2) * legoSpacingZ;
+		float yOffset = 0.4f; // legonyExtent
+		// ’x’ ja ’z’ on float muuttujia, joihin on tallennettu konstruktorin xOffset/zOffset
+		// laske ’surfaceHeight’ konstruktorissa
+		return new Vector3f(x + xOffset, 7f+yOffset, z + zOffset - 12);
+	}
+	// APP kohteeseen lego.location
+	// sama idea kuin edellisen harjoituksen initTestMove()
+	public void initMoveToLego(Lego lego) {
+		initTestMove(lego.location.addLocal(0,0.2f,0));
+		
+	}
+	// APP kohteeseen destination
+	public void initMoveToStation(Lego lego, Vector3f destination) {
+	 assemblyArm.tooltipNode.attachChild(lego.node); // muuten lego ei lähde mukaan
+	 // nyt legon noden sijainti pitää määritellä nodeToolTip paikallisissa
+	 // koordinaateissa. lego.node.setLocalTranslation(0,0,0) laittaisi legon
+	 // keskipisteen tooltipin keskipisteeseen
+	 // vinkki: tooltipin yExtent = 0.4f ja legon yExtent = 0.2f
+	lego.node.setLocalTranslation(0,-0.6f,0);
+	 // sitten tehdään APP kohteeseen ”destination”
+	 initTestMove(destination);
+	}
+
 	
 }
