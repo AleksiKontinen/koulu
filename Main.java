@@ -21,6 +21,7 @@ public class Main extends SimpleApplication {
  
  public static float floorHeight = -15;
  AssemblyStation assemblyStation;
+ LegoBuffer legoBuffer;
  //Trajectory trajectory;
  
  @Override
@@ -31,6 +32,7 @@ public class Main extends SimpleApplication {
 	 lamp_light.setRadius(400f);
 	 lamp_light.setPosition(new Vector3f(2f, 8.0f, 10.0f));
 	 rootNode.addLight(lamp_light);
+	 legoBuffer = new LegoBuffer(assetManager, rootNode, 5f,-29f,10,6);
 	 
 	 assemblyStation = new AssemblyStation(assetManager,rootNode,5, -11);
 	 rootNode.attachChild(assemblyStation.node);
