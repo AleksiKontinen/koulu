@@ -16,7 +16,7 @@ public class LegoBuffer {
     ArrayList<Lego> legos = new ArrayList<Lego>(500);
     float x;
     float z;
-    private float legoSpacingX = 2f; // Kasvatettu hieman, etteivät osu toisiinsa
+    private float legoSpacingX = 2f; 
     private float legoSpacingZ = 2f;
     int rowSize;
     int columnSize;
@@ -92,7 +92,7 @@ public class LegoBuffer {
     	for(int i=0; i<(rowSize*columnSize); i++) {
     		lego = legos.get(i);
     				if(lego != null) { 	
-    					if(lego.legoColor == color) {
+    					if(lego.legoColor.equals(color)) {
     						lego.location = getLegoTopLocation(i);
     						legos.set(i, null);
     						return lego;

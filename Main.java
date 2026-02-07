@@ -63,20 +63,7 @@ ArrayList<String> colors = new ArrayList(numColors);
  @Override
  public void simpleUpdate(float tpf) {
  //TODO: add update code
-	/* Lego legoGreen = new Lego(assetManager,"green");
-	 Lego legoRed = new Lego(assetManager,"red");
-	 Lego legoPink = new Lego(assetManager,"pink");
-	 Lego legoYellow = new Lego(assetManager,"yellow");
-	 Lego legoBlue = new Lego(assetManager,"blue");
-	 rootNode.attachChild(legoGreen.node);
-	 rootNode.attachChild(legoRed.node);
-	 rootNode.attachChild(legoPink.node);
-	 rootNode.attachChild(legoYellow.node);
-	 rootNode.attachChild(legoBlue.node);
-	 legoGreen.node.setLocalTranslation(8f, 0, 0); 
-	 legoRed.node.setLocalTranslation(4f, 0, 0); 
-	 legoYellow.node.setLocalTranslation(-4f, 0, 0); 
-	 legoBlue.node.setLocalTranslation(-8f, 0, 0); */
+	
 	 assemblyStation.move();
 	 if(!freeze && moving) {
 		 moving = assemblyStation.move();
@@ -90,7 +77,7 @@ ArrayList<String> colors = new ArrayList(numColors);
 	 		Vector3f v = assemblyStation.slotPosition(slotIndex);
 	 		slotIndex++;
 	 		// suoritetaan APP kohteeseen v
-	 		assemblyStation.initTestMove(v);
+	 		assemblyStation.initMoveToStation(lego,v);
 	 		goingToLego = false;
 	 		moving = true;
 		 } else { // jätetään lego tähän
@@ -98,10 +85,10 @@ ArrayList<String> colors = new ArrayList(numColors);
 				 // lego on nyt toimitettu oikeaan paikkaan kokoonpanoasemalle
 				 // otetaan paikka talteen ennen kuin irrotetaan noodi
 				 Vector3f loc = lego.node.getWorldTranslation();
+				 
 				 // irrota legon node tooltipin nodesta
 				 // (tämä on pitkä rimpsu jossa käytetään monen olion nimeä
 				 assemblyStation.assemblyArm.tooltipNode.detachChild(lego.node);
-				 
 				 lego.node.setLocalTranslation(loc);
 				 // legon node ei ole nyt kiinni missään nodessa, joten se ei tule
 				 // näkyviin ennen kuin korjaat asian

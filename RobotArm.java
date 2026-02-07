@@ -23,11 +23,11 @@ public class RobotArm {
 	Box yArmShape;
 	Box tooltipShape;
 	private Vector3f targetLocation; // välietappi
-	float step = 0.1f; // etäisyys akselia kohden mikä liikutaan yhden syklin aikana
+	float step = 0.5f; // etäisyys akselia kohden mikä liikutaan yhden syklin aikana
 	
 
 	
-	public RobotArm(AssetManager assetManager, Node node) {
+	public RobotArm(AssetManager assetManager,Node node) {
 		
 		 Material mat = new Material(assetManager,
 				 "Common/MatDefs/Light/Lighting.j3md");
@@ -135,7 +135,7 @@ public class RobotArm {
 			 // nodetoolTip paikaksi on määritelty yArm alapinta, mutta nodetoolTipin parent
 			 // noodi ei liiku, joten nodetoolTip pitää siirtää kuten yArm
 			 // samalla liikkuu nodetoolTippiin liitetty tooltipin geometria
-			 tooltip.setLocalTranslation(tooltip.getLocalTranslation().add(v2));
+			 tooltipNode.setLocalTranslation(tooltipNode.getLocalTranslation().add(v2));
 			 if((yReady && xReady) && zReady) {
 			 return false; //i.e. not moving anymore
 			 } else {
