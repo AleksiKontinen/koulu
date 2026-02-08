@@ -59,6 +59,7 @@ public class AssemblyStation {
 		Vector3f v1;
 		if(Main.firstReady) {
 			v1 = assemblyArm2.getToolTipLocation().clone();
+			System.out.print(v1);
 		}else {
 			v1 = assemblyArm.getToolTipLocation().clone();
 		}
@@ -79,9 +80,10 @@ public class AssemblyStation {
 	// palauttaa false jos saavutettiin trajectory viimeinen (väli)etappi, eli
     // initTestMove() saama destination. Muuten palauttaa true.
 	// tätä tulee kutsua syklisesti kunnes se palauttaa false
-	public boolean move() { // muokkaa tätä siten että se erottelee robokädet sen perusteella kumpi liikkuu!!!!
+	public boolean move() { 
 		if (moving) {
 			if(Main.firstReady) {
+				System.out.print("now moving");
 				moving = assemblyArm2.move();
 			}else {
 				moving = assemblyArm.move();
@@ -99,6 +101,7 @@ public class AssemblyStation {
 				// annetaan robotille seuraava välietappi ja alustetaan moving seuraavaa
 				// move() kutsua silmälläpitäen
 				if(Main.firstReady) {
+					
 					assemblyArm2.initMove(nextPoint);
 				}else {
 					assemblyArm.initMove(nextPoint);

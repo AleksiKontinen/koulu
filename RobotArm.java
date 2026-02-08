@@ -23,7 +23,7 @@ public class RobotArm {
 	Box yArmShape;
 	Box tooltipShape;
 	private Vector3f targetLocation; // välietappi
-	float step = 0.5f; // etäisyys akselia kohden mikä liikutaan yhden syklin aikana
+	float step = 1f; // etäisyys akselia kohden mikä liikutaan yhden syklin aikana
 	ColorRGBA c;
 
 	
@@ -94,7 +94,8 @@ public class RobotArm {
 	}
 	
 	// moves towards target location and returns false when it reached the location
-	public boolean move() {
+	public boolean move() { // HERE
+		if(targetLocation == null) return false;
 		Vector3f location = getToolTipLocation();
 		// lasketaan etäisyys määränpäähän maailma-koordinaateissa
 		float xDistance = targetLocation.getX() - location.getX();

@@ -12,7 +12,7 @@ import com.jme3.scene.shape.Box;
 public class LegoBuffer {
     private Box box;
     private Geometry geom;
-    private float surfaceHeight;
+    float surfaceHeight;
     ArrayList<Lego> legos = new ArrayList<Lego>(500);
     float x;
     float z;
@@ -85,9 +85,9 @@ public class LegoBuffer {
     
     // APP tarvitsee legonyläpinnan koordinaatin, johon robotti tuo työkalunsa alapinnassa
     // olevan ’tooltip’ pisteensä
-    private Vector3f getLegoTopLocation(int index) {
+    /*private Vector3f getLegoTopLocation(int index) {
     	return new Vector3f(x+xCoord(index), surfaceHeight + 0.4f, z+zCoord(index));
-    }
+    }*/
     // palauttaa Lego olion joka on halutun värinen tai null jos tällaista legoa ei ole
     // päivitä legoColor Lego luokkaan ja konstruktoriin
     // päivitä location Lego luokkaan

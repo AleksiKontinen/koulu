@@ -61,6 +61,7 @@ ArrayList<String> colors = new ArrayList(numColors);
 	 //RobotArm robotArm = new RobotArm(assetManager, rootNode);
 	 //rootNode.attachChild(robotArm.node);
 	 assemblyStation.initTestMove(new Vector3f(0,0,-5));
+	 assemblyStation.move();
 	 colors.add("yellow");
 	 colors.add("blue");
 	 colors.add("pink");
@@ -74,7 +75,7 @@ ArrayList<String> colors = new ArrayList(numColors);
  public void simpleUpdate(float tpf) {
  //TODO: add update code
 	
-	 assemblyStation.move();
+	 //assemblyStation.move();
 	 if(!freeze && moving) {
 		 moving = assemblyStation.move();
 	 }
@@ -118,9 +119,11 @@ ArrayList<String> colors = new ArrayList(numColors);
 					 		// kaikki legot on siirretty
 					 		//freeze = true; // tämän jälkeen mitään ei tapahdu
 					 		firstReady = true;
-					 		goingToLego = false;
+					 		
 					 		colorIndex--;
 					 		lego = null;
+					 		moving = false;
+					 		assemblyStation.moving = false;
 					 	} else {
 					 		// haetaan bufferista seuraava lego, jonka väri on:
 					 		// colors.get(colorIndex)
@@ -136,41 +139,44 @@ ArrayList<String> colors = new ArrayList(numColors);
 				 if(!freeze && !firstReady) {
 					 assemblyStation.initMoveToLego(lego);
 				 }
-				 if(!firstReady) goingToLego = true;
+				 goingToLego = true;
 			 }
-		}else { //unloadState
-			if(goingToLego) {
-				Vector3f u = assemblyStation.slotPosition(slotIndex);
-				slotIndex--;
-				assemblyStation.initMoveToStation(lego,u);
-		 		goingToLego = false;
-		 		moving = true;
-			}else {
-				if(lego != null) {
-					Vector3f loc = lego.node.getWorldTranslation();
-					 assemblyStation.assemblyArm2.tooltipNode.detachChild(lego.node);
-					 lego.node.setLocalTranslation(loc);
-					 // legon node ei ole nyt kiinni missään nodessa, joten se ei tule
-					 // näkyviin ennen kuin korjaat asian
-					 assemblyStation.node.attachChild(lego.node);
-				}
-				lego = legoBuffer2.legos.getLast();
-				 
-				moving = true;
-				if (lego == null) {
-					if(slotIndex < 0 ) {
-						freeze = true;
-					}
-					
-				
-				}
-				goingToLego = true;
-			}
+		} else { 
+            // --- UNLOAD STATE (Käsi 2) ---
+            if (goingToLego) {
+                // HAETAAN LEGO PINOSSA
+            	System.out.print("going");
+                if (slotIndex > 0) {
+                    lego = legoBuffer2.legos.get(slotIndex - 1);
+                    if(lego == null)System.out.print("null");
+                    lego.location = assemblyStation.slotPosition(slotIndex - 1);
+                    System.out.print(assemblyStation.moving);
+                    assemblyStation.initMoveToLego(lego);
+                    //VIEDÄÄN
+                    Vector3f u = legoBuffer2.getLegoCenterLocation(slotIndex);
+                    assemblyStation.initMoveToStation(lego, u);
+                    slotIndex--; 
+                    goingToLego = false; 
+                    moving = true;
+                } else {
+                    freeze = true;
+                    System.out.println("Kaikki legot siirretty!");
+                }
+            } else {
+                // OLLAANBUFFERILLA
+                if (lego != null) {
+               	 Vector3f loc = lego.node.getWorldTranslation();
+				 assemblyStation.assemblyArm.tooltipNode.detachChild(lego.node);
+				 lego.node.setLocalTranslation(loc);
+				 // legon node ei ole nyt kiinni missään nodessa, joten se ei tule
+				 // näkyviin ennen kuin korjaat asian
+				 assemblyStation.node.attachChild(lego.node);
+                }
+           }
+           
 
 		}
-
 	 }
-	 
  }
  @Override
  public void simpleRender(RenderManager rm) {
