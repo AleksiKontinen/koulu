@@ -22,14 +22,18 @@ public class Main extends SimpleApplication {
  }
  
  public static boolean stacktype = true;
+ public static boolean dualArm = true;
  public static float floorHeight = -15;
+ public static boolean firstReady = false;
  AssemblyStation assemblyStation;
  LegoBuffer legoBuffer;
+ LegoBuffer legoBuffer2;
  Trajectory trajectory;
  boolean freeze = false; // debug tarkoituksiin – laita true siinä kohdassa koodia
  // mihin haluat robotin pysähtyvän
  boolean moving = false; // true kun robotti liikkuu
  boolean goingToLego = false; // true kun mennään hakemaan legoa bufferista
+ 
  Lego lego;
  int slotIndex = 0; // kokoonpanoaseman slot
  final int numColors = 4; // final on sama kuin C-kielen cons
@@ -45,7 +49,11 @@ ArrayList<String> colors = new ArrayList(numColors);
 	 lamp_light.setRadius(400f);
 	 lamp_light.setPosition(new Vector3f(2f, 8.0f, 10.0f));
 	 rootNode.addLight(lamp_light);
-	 legoBuffer = new LegoBuffer(assetManager, rootNode, 5f,-29f,10,6);
+	 legoBuffer = new LegoBuffer(assetManager, rootNode, 5f,-29f,10,6,true);
+	 if(dualArm) {
+		 legoBuffer2 = new LegoBuffer(assetManager,rootNode,5f,15,10,6,false);
+	 }
+	 
 	 
 	 assemblyStation = new AssemblyStation(assetManager,rootNode,5, -11);
 	 rootNode.attachChild(assemblyStation.node);

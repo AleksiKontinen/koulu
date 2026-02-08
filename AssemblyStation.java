@@ -16,6 +16,8 @@ public class AssemblyStation {
 	Box box;
 	Trajectory trajectory;
 	RobotArm assemblyArm;
+	RobotArm assemblyArm2;
+	
 	float x;
     float z;
     
@@ -41,9 +43,12 @@ public class AssemblyStation {
 		geom.setLocalTranslation(xOffset, Main.floorHeight + yExtent, zOffset);
 		
 		
-		assemblyArm = new RobotArm(assetManager,node);
+		assemblyArm = new RobotArm(assetManager,node,false);
 		node.attachChild(assemblyArm.node);
-		
+		if(Main.dualArm) {
+			assemblyArm2 = new RobotArm(assetManager,node,true);
+			node.attachChild(assemblyArm2.node);
+		}
 
 		
 	}
@@ -51,7 +56,13 @@ public class AssemblyStation {
 	public void initTestMove(Vector3f destination) {
 		trajectory = new Trajectory();
 		// eka välietappi suoraan ylös max korkeuteen
-		Vector3f v1 = assemblyArm.getToolTipLocation().clone();
+		Vector3f v1;
+		if(Main.firstReady) {
+			v1 = assemblyArm2.getToolTipLocation().clone();
+		}else {
+			v1 = assemblyArm.getToolTipLocation().clone();
+		}
+		
 		v1.setY(maxHeight);
 		trajectory.addPoint(v1);
 		
@@ -68,7 +79,7 @@ public class AssemblyStation {
 	// palauttaa false jos saavutettiin trajectory viimeinen (väli)etappi, eli
     // initTestMove() saama destination. Muuten palauttaa true.
 	// tätä tulee kutsua syklisesti kunnes se palauttaa false
-	public boolean move() {
+	public boolean move() { // muokkaa tätä siten että se erottelee robokädet sen perusteella kumpi liikkuu!!!!
 		if (moving) {
 		moving = assemblyArm.move();
 		return true;
@@ -95,10 +106,10 @@ public class AssemblyStation {
 	float legoSpacingZ = 2; // legojen slottipaikkojen etäisyys z-suuntaan
 	// kokoonpanoasemalla on slotteja, joiden indeksi on kokonaisluku
 	// tämä palauttaa slotin 3D koordinaatit
-	public Vector3f slotPosition(int slot) {
+	public Vector3f slotPosition(int slot) { // MUOKKAA kolmas stäkkäystapa eli station 2
 	 // vain osa asemasta on varattu tähän tarkoitukseen. Sen koko on 16x12
 		int rowSize = (int)((16)/legoSpacingX);
-		int columnSize = (int)((12)/legoSpacingZ);
+		//int columnSize = (int)((12)/legoSpacingZ);
 		int rowIndex = slot % rowSize;
 		float xOffset = (rowIndex-1) * legoSpacingX;
 		int columnIndex = slot / rowSize;
@@ -128,7 +139,7 @@ public class AssemblyStation {
 		
 	}
 	// APP kohteeseen destination
-	public void initMoveToStation(Lego lego, Vector3f destination) {
+	public void initMoveToStation(Lego lego, Vector3f destination) { // MUOKKAA EROTTAMAAN ROBOKÄDET!!!
 	Vector3f loc = lego.node.getWorldTranslation().clone();
 	assemblyArm.tooltipNode.attachChild(lego.node); // muuten lego ei lähde mukaan
 	Vector3f localPos = assemblyArm.tooltipNode.worldToLocal(loc, null);

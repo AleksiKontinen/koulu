@@ -24,15 +24,21 @@ public class RobotArm {
 	Box tooltipShape;
 	private Vector3f targetLocation; // välietappi
 	float step = 0.5f; // etäisyys akselia kohden mikä liikutaan yhden syklin aikana
-	
+	ColorRGBA c;
 
 	
-	public RobotArm(AssetManager assetManager,Node node) {
+	public RobotArm(AssetManager assetManager,Node node,boolean mirror) {
 		
 		 Material mat = new Material(assetManager,
 				 "Common/MatDefs/Light/Lighting.j3md");
 				  mat.setBoolean("UseMaterialColors",true);
-		ColorRGBA c = ColorRGBA.Orange;
+		if (mirror) {
+			 c= ColorRGBA.Pink;
+		}else {
+			c = ColorRGBA.Orange;
+		}
+		
+		
 		mat.setColor("Diffuse", c);
 					
 		mastShape = new Box(0.2f,6f,0.2f);
@@ -54,11 +60,20 @@ public class RobotArm {
 		yArm.setMaterial(mat);
 		tooltip.setMaterial(mat);
 		
-		mast.setLocalTranslation(-8f,0f,-10f);
-		zArm.setLocalTranslation(-8f,6f,-8f);
-		xArm.setLocalTranslation(6f,6f,0f);
-		yArm.setLocalTranslation(-7f,6f,0f);
-		tooltip.setLocalTranslation(-7f,-0.4f, 0f);
+		if (mirror) {
+			mast.setLocalTranslation(8f,0f,-10f);
+			zArm.setLocalTranslation(8f,6f,-8f);
+			xArm.setLocalTranslation(-6f,6f,0f);
+			yArm.setLocalTranslation(7f,6f,0f);
+			tooltip.setLocalTranslation(7f,-0.4f, 0f);
+		}else {
+			mast.setLocalTranslation(-8f,0f,-10f);
+			zArm.setLocalTranslation(-8f,6f,-8f);
+			xArm.setLocalTranslation(6f,6f,0f);
+			yArm.setLocalTranslation(-7f,6f,0f);
+			tooltip.setLocalTranslation(-7f,-0.4f, 0f);
+		}
+
 		
 		node.attachChild(mast);
 		node.attachChild(zArm);

@@ -21,7 +21,7 @@ public class LegoBuffer {
     int rowSize;
     int columnSize;
 
-    public LegoBuffer(AssetManager assetManager, Node rootNode, float xOffset, float zOffset, int rowSize, int columnSize) {
+    public LegoBuffer(AssetManager assetManager, Node rootNode, float xOffset, float zOffset, int rowSize, int columnSize,boolean spawnLego) {
         this.rowSize = rowSize;
         this.columnSize = columnSize;
         this.x = xOffset;
@@ -49,18 +49,20 @@ public class LegoBuffer {
         
         // Luodaan täsmälleen haluttu määrä legoja
         int totalLegos = rowSize * columnSize;
-        for (int i = 0; i < totalLegos; i++) {
-            // Vaihdetaan väriä indeksin mukaan
-        	
-            String colorLego = colors[i % colors.length];
-            
-            Lego lego = new Lego(assetManager, colorLego);
-            legos.add(lego);
-            rootNode.attachChild(lego.node);
-            
-            // Asetetaan paikka välittömästi
-            lego.node.setLocalTranslation(getLegoCenterLocation(i));
+        if (spawnLego) {
+        	for (int i = 0; i < totalLegos; i++) {
+                // Vaihdetaan väriä indeksin mukaan
+            	
+                String colorLego = colors[i % colors.length];
+                
+                Lego lego = new Lego(assetManager, colorLego);
+                legos.add(lego);
+                rootNode.attachChild(lego.node);
+                lego.node.setLocalTranslation(getLegoCenterLocation(i));
+            }
+        		
         }
+        
     }
 
     private float xCoord(int index) {
