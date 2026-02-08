@@ -66,8 +66,11 @@ public class LegoBuffer {
     }
 
     private float xCoord(int index) {
-        int rowIndex = index % rowSize;
-        return (rowIndex - (rowSize - 1) / 2f) * legoSpacingX;
+    	
+    	int rowIndex = index % rowSize;
+    	return (rowIndex - (rowSize - 1) / 2f) * legoSpacingX;
+    	
+        
     }
 
     private float zCoord(int index) {
@@ -95,7 +98,7 @@ public class LegoBuffer {
     		lego = legos.get(i);
     				if(lego != null) { 	
     					if(lego.legoColor.equals(color)) {
-    						lego.location = getLegoTopLocation(i);
+    						lego.location = lego.node.getWorldTranslation().add(0,0.2f,0);
     						legos.set(i, null);
     						return lego;
     					}
@@ -103,4 +106,8 @@ public class LegoBuffer {
     	}
     	return null;
  }
+    public boolean LegoAdd(Lego lego) {
+    	return legos.add(lego);
+    }
+    
 }

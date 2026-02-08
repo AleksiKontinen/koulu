@@ -81,7 +81,12 @@ public class AssemblyStation {
 	// tätä tulee kutsua syklisesti kunnes se palauttaa false
 	public boolean move() { // muokkaa tätä siten että se erottelee robokädet sen perusteella kumpi liikkuu!!!!
 		if (moving) {
-		moving = assemblyArm.move();
+			if(Main.firstReady) {
+				moving = assemblyArm2.move();
+			}else {
+				moving = assemblyArm.move();
+			}
+		
 		return true;
 		} else {
 			// tänne tullaan jos edellinen välietappi saavutettiin
@@ -93,7 +98,12 @@ public class AssemblyStation {
 				System.out.println(nextPoint.toString());
 				// annetaan robotille seuraava välietappi ja alustetaan moving seuraavaa
 				// move() kutsua silmälläpitäen
-				assemblyArm.initMove(nextPoint);
+				if(Main.firstReady) {
+					assemblyArm2.initMove(nextPoint);
+				}else {
+					assemblyArm.initMove(nextPoint);
+				}
+				
 				moving = true;
 				return true;
 			}
@@ -114,7 +124,7 @@ public class AssemblyStation {
 		float xOffset = (rowIndex-1) * legoSpacingX;
 		int columnIndex = slot / rowSize;
 		float zOffset = (columnIndex + 2) * legoSpacingZ;
-		float yOffset = 0.6f; // legonyExtent
+		float yOffset = 0.8f; // legonyExtent
 		// ’x’ ja ’z’ on float muuttujia, joihin on tallennettu konstruktorin xOffset/zOffset
 		// laske ’surfaceHeight’ konstruktorissa
 		float surfaceHeight = Main.floorHeight + 2*yExtent;
@@ -125,7 +135,12 @@ public class AssemblyStation {
 		float stackXoffset = legoSpacingX * stackXindex;
 		float stackYoffset = yOffset + (stackYindex * legoh);
 		if (Main.stacktype) {
-			return new Vector3f(x + stackXoffset, surfaceHeight + stackYoffset, z - 6);
+			if (Main.firstReady) {
+				return new Vector3f(x + xOffset, surfaceHeight+yOffset, z + zOffset - 22);
+			}else{
+				return new Vector3f(x + stackXoffset, surfaceHeight + stackYoffset, z - 6);
+			}
+			
 		}else {
 			return new Vector3f(x + xOffset, surfaceHeight+yOffset, z + zOffset - 12);
 		}
@@ -139,10 +154,18 @@ public class AssemblyStation {
 		
 	}
 	// APP kohteeseen destination
-	public void initMoveToStation(Lego lego, Vector3f destination) { // MUOKKAA EROTTAMAAN ROBOKÄDET!!!
+	public void initMoveToStation(Lego lego, Vector3f destination) {
 	Vector3f loc = lego.node.getWorldTranslation().clone();
-	assemblyArm.tooltipNode.attachChild(lego.node); // muuten lego ei lähde mukaan
-	Vector3f localPos = assemblyArm.tooltipNode.worldToLocal(loc, null);
+	Vector3f localPos;
+	if(Main.firstReady) {
+		assemblyArm2.tooltipNode.attachChild(lego.node);
+		localPos = assemblyArm2.tooltipNode.worldToLocal(loc, null);
+	}else {
+		assemblyArm.tooltipNode.attachChild(lego.node); // muuten lego ei lähde mukaan
+		localPos = assemblyArm.tooltipNode.worldToLocal(loc, null);
+	}
+	
+	
 	lego.node.setLocalTranslation(localPos.add(0,-0.2f,0));
 	 // sitten tehdään APP kohteeseen ”destination”
 	 initTestMove(destination);

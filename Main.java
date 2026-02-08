@@ -38,6 +38,7 @@ public class Main extends SimpleApplication {
  int slotIndex = 0; // kokoonpanoaseman slot
  final int numColors = 4; // final on sama kuin C-kielen cons
  int colorIndex = 0; // “colors” (kts alla) listan indeksi
+ int unloadIndex = 0;
 //listan perusteella tiedetään missä järjestyksessä lajitellaan värin mukaan
 ArrayList<String> colors = new ArrayList(numColors);
 
@@ -80,52 +81,95 @@ ArrayList<String> colors = new ArrayList(numColors);
 	 if(!moving && !freeze) {
 	// moving=false tarkoittaa että saavuttiin reitin päähän, joten on 2 tapausta:
 	// otetaan lego mukaan tai jätetään se
-	 	if(goingToLego) { // otetaan lego mukaan
-	 		// nyt ollaan bufferilla sen legon kohdalla mikä otetaan mukaan
-	 		// v:hen laitetaan kokoonpanoaseman slot numero ”slotIndex” koordinaatit
-	 		Vector3f v = assemblyStation.slotPosition(slotIndex);
-	 		slotIndex++;
-	 		// suoritetaan APP kohteeseen v
-	 		assemblyStation.initMoveToStation(lego,v);
-	 		goingToLego = false;
-	 		moving = true;
-		 } else { // jätetään lego tähän
-			 if(lego != null) { // käynnistyksen yhteydessä tätä koodia ei suoriteta
-				 // lego on nyt toimitettu oikeaan paikkaan kokoonpanoasemalle
-				 // otetaan paikka talteen ennen kuin irrotetaan noodi
-				 Vector3f loc = lego.node.getWorldTranslation();
+		if(!firstReady) {
+		 	if(goingToLego) { // otetaan lego mukaan
+		 		// nyt ollaan bufferilla sen legon kohdalla mikä otetaan mukaan
+		 		// v:hen laitetaan kokoonpanoaseman slot numero ”slotIndex” koordinaatit
+		 		Vector3f v = assemblyStation.slotPosition(slotIndex);
+		 		slotIndex++;
+		 		// suoritetaan APP kohteeseen v
+		 		assemblyStation.initMoveToStation(lego,v);
+		 		goingToLego = false;
+		 		moving = true;
+			 } else { // jätetään lego tähän
+				 if(lego != null) { // käynnistyksen yhteydessä tätä koodia ei suoriteta
+					 // lego on nyt toimitettu oikeaan paikkaan kokoonpanoasemalle
+					 // otetaan paikka talteen ennen kuin irrotetaan noodi
+					 Vector3f loc = lego.node.getWorldTranslation();
+					 
+					 // irrota legon node tooltipin nodesta
+					 // (tämä on pitkä rimpsu jossa käytetään monen olion nimeä
+					 assemblyStation.assemblyArm.tooltipNode.detachChild(lego.node);
+					 lego.node.setLocalTranslation(loc);
+					 // legon node ei ole nyt kiinni missään nodessa, joten se ei tule
+					 // näkyviin ennen kuin korjaat asian
+					 assemblyStation.node.attachChild(lego.node);
+					 
+				 }
+				 // haetaan bufferista seuraava lego, jonka väri on: colors.get(colorIndex)
+				 // eli päivitä muuttujan ’lego’ arvo
+				 lego = legoBuffer.giveLego(colors.get(colorIndex));
 				 
-				 // irrota legon node tooltipin nodesta
-				 // (tämä on pitkä rimpsu jossa käytetään monen olion nimeä
-				 assemblyStation.assemblyArm.tooltipNode.detachChild(lego.node);
-				 lego.node.setLocalTranslation(loc);
-				 // legon node ei ole nyt kiinni missään nodessa, joten se ei tule
-				 // näkyviin ennen kuin korjaat asian
-				 assemblyStation.node.attachChild(lego.node);
+				 moving = true;
+				 if (lego == null) {
+					 // bufferissa ei ole enempää tämänvärisiä legoja
+					 colorIndex++;
+					 	if(colorIndex >= numColors) {
+					 		// kaikki legot on siirretty
+					 		//freeze = true; // tämän jälkeen mitään ei tapahdu
+					 		firstReady = true;
+					 		goingToLego = false;
+					 		colorIndex--;
+					 		lego = null;
+					 	} else {
+					 		// haetaan bufferista seuraava lego, jonka väri on:
+					 		// colors.get(colorIndex)
+					 		lego = legoBuffer.giveLego(colors.get(colorIndex));
+					 		if(dualArm) legoBuffer2.LegoAdd(lego);
+					 	
+					 	}
+				 }else {
+					 if(dualArm) legoBuffer2.LegoAdd(lego);
+					 
+				 }
+				 
+				 if(!freeze && !firstReady) {
+					 assemblyStation.initMoveToLego(lego);
+				 }
+				 if(!firstReady) goingToLego = true;
 			 }
-			 // haetaan bufferista seuraava lego, jonka väri on: colors.get(colorIndex)
-			 // eli päivitä muuttujan ’lego’ arvo
-			 lego = legoBuffer.giveLego(colors.get(colorIndex));
-			 moving = true;
-			 if (lego == null) {
-				 // bufferissa ei ole enempää tämänvärisiä legoja
-				 colorIndex++;
-				 	if(colorIndex >= numColors) {
-				 		// kaikki legot on siirretty
-				 		freeze = true; // tämän jälkeen mitään ei tapahdu
-				 	} else {
-				 		// haetaan bufferista seuraava lego, jonka väri on:
-				 		// colors.get(colorIndex)
-				 		lego = legoBuffer.giveLego(colors.get(colorIndex));
-				 	}
-			 }
-			 if(!freeze) {
-				 assemblyStation.initMoveToLego(lego);
-			 }
-			 goingToLego = true;
-		 }
-	}
+		}else { //unloadState
+			if(goingToLego) {
+				Vector3f u = assemblyStation.slotPosition(slotIndex);
+				slotIndex--;
+				assemblyStation.initMoveToStation(lego,u);
+		 		goingToLego = false;
+		 		moving = true;
+			}else {
+				if(lego != null) {
+					Vector3f loc = lego.node.getWorldTranslation();
+					 assemblyStation.assemblyArm2.tooltipNode.detachChild(lego.node);
+					 lego.node.setLocalTranslation(loc);
+					 // legon node ei ole nyt kiinni missään nodessa, joten se ei tule
+					 // näkyviin ennen kuin korjaat asian
+					 assemblyStation.node.attachChild(lego.node);
+				}
+				lego = legoBuffer2.legos.getLast();
+				 
+				moving = true;
+				if (lego == null) {
+					if(slotIndex < 0 ) {
+						freeze = true;
+					}
+					
+				
+				}
+				goingToLego = true;
+			}
 
+		}
+
+	 }
 	 
  }
  @Override
