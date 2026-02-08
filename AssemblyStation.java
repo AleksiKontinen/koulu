@@ -22,6 +22,7 @@ public class AssemblyStation {
 	int yExtent = 6;
 	float maxHeight = 4; // max korkeus reitin välietapeille
 	boolean moving = false; // true jos matkalla seuraavaan välietappiin
+	float stackh = 0;
 	
 	
 	
@@ -106,7 +107,18 @@ public class AssemblyStation {
 		// ’x’ ja ’z’ on float muuttujia, joihin on tallennettu konstruktorin xOffset/zOffset
 		// laske ’surfaceHeight’ konstruktorissa
 		float surfaceHeight = Main.floorHeight + 2*yExtent;
-		return new Vector3f(x + xOffset, surfaceHeight+yOffset, z + zOffset - 12);
+		
+		int stackYindex = slot % 15;
+		int stackXindex = (int)(slot / 15);
+		float legoh = 0.4f;
+		float stackXoffset = legoSpacingX * stackXindex;
+		float stackYoffset = yOffset + (stackYindex * legoh);
+		if (Main.stacktype) {
+			return new Vector3f(x + stackXoffset, surfaceHeight + stackYoffset, z - 6);
+		}else {
+			return new Vector3f(x + xOffset, surfaceHeight+yOffset, z + zOffset - 12);
+		}
+		
 	}
 	// APP kohteeseen lego.location
 	// sama idea kuin edellisen harjoituksen initTestMove()

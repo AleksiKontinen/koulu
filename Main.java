@@ -21,6 +21,7 @@ public class Main extends SimpleApplication {
  app.start();
  }
  
+ public static boolean stacktype = true;
  public static float floorHeight = -15;
  AssemblyStation assemblyStation;
  LegoBuffer legoBuffer;
