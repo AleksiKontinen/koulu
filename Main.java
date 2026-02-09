@@ -121,7 +121,7 @@ ArrayList<String> colors = new ArrayList(numColors);
 					 		firstReady = true;
 					 		
 					 		colorIndex--;
-					 		lego = null;
+					 		
 					 		moving = false;
 					 		assemblyStation.moving = false;
 					 	} else {
@@ -142,39 +142,67 @@ ArrayList<String> colors = new ArrayList(numColors);
 				 goingToLego = true;
 			 }
 		} else { 
-            // --- UNLOAD STATE (Käsi 2) ---
-            if (goingToLego) {
-                // HAETAAN LEGO PINOSSA
-            	System.out.print("going");
-                if (slotIndex > 0) {
-                    lego = legoBuffer2.legos.get(slotIndex - 1);
-                    if(lego == null)System.out.print("null");
-                    lego.location = assemblyStation.slotPosition(slotIndex - 1);
-                    System.out.print(assemblyStation.moving);
-                    assemblyStation.initMoveToLego(lego);
-                    //VIEDÄÄN
-                    Vector3f u = legoBuffer2.getLegoCenterLocation(slotIndex);
-                    assemblyStation.initMoveToStation(lego, u);
-                    slotIndex--; 
-                    goingToLego = false; 
-                    moving = true;
-                } else {
-                    freeze = true;
-                    System.out.println("Kaikki legot siirretty!");
-                }
-            } else {
-                // OLLAANBUFFERILLA
-                if (lego != null) {
-               	 Vector3f loc = lego.node.getWorldTranslation();
-				 assemblyStation.assemblyArm.tooltipNode.detachChild(lego.node);
-				 lego.node.setLocalTranslation(loc);
-				 // legon node ei ole nyt kiinni missään nodessa, joten se ei tule
-				 // näkyviin ennen kuin korjaat asian
-				 assemblyStation.node.attachChild(lego.node);
-                }
-           }
-           
+			// --- UNLOAD STATE (Käsi 2) ---
+		    // Tämä suoritetaan, kun robotti on PYSÄHTYNYT (moving = false)
 
+		    if (goingToLego) {
+		        // TAPAUS A: OLLAAN SAAVUTTU HAKEMAAN LEGOA (Pinon luokse)
+		        // Lego on nyt robotin ulottuvilla. 
+		        // Seuraava liike: Ota lego kyytiin ja vie se Buffer 2:een.
+		        System.out.print("toLego");
+		        if (lego != null) {
+		            // Kohde: Buffer 2:n vastaava slotti
+		            Vector3f dest = legoBuffer2.getLegoCenterLocation(slotIndex).add(0,0.8f,0);
+		            
+		            // initMoveToStation hoitaa legon "attach"-komennon käteen
+		            assemblyStation.initMoveToStation(lego, dest);
+		            
+		            // Nyt olemme viemässä legoa pois, eli emme ole enää "menossa hakemaan"
+		            goingToLego = false;
+		            moving = true;
+		        }else {
+		        	goingToLego = false;
+		        }
+
+		    } else {
+		        // TAPAUS B: OLLAAN SAAVUTTU BUFFERILLE (Pudotuspaikka)
+		        // Robotti on tuonut legon perille.
+		        // Seuraava liike: Irrota lego, ja lähde hakemaan seuraavaa (jos on).
+
+		        // 1. IRROTUS (Tämä puuttui tai oli väärässä paikassa)
+		        if (lego != null) {
+		            System.out.print("drop");
+		        	Vector3f loc = lego.node.getWorldTranslation();
+		            // Irrota lego kädestä (AssemblyArm2)
+		            assemblyStation.assemblyArm2.tooltipNode.detachChild(lego.node);
+		            // Aseta legon sijainti ja kiinnitä se "maailmaan" (rootNode tai assemblyStation)
+		            lego.node.setLocalTranslation(loc);
+		            assemblyStation.node.attachChild(lego.node); 
+		        }
+
+		        // 2. VALMISTELE SEURAAVA HAKU
+		        slotIndex--; // Siirrytään seuraavaan (edelliseen) legon, koska puramme pinoa (LIFO)
+
+		        if (slotIndex >= 0) {
+		            // Haetaan viite seuraavaan legon listasta
+		        	System.out.print("next");
+		            lego = legoBuffer2.legos.get(slotIndex);
+		            
+		            // Määritellään missä tämä lego fyysisesti sijaitsee (Pinossa)
+		            // TÄRKEÄÄ: Tämän on vastattava AssemblyStationin pinoamiskoordinaatteja!
+		            lego.location = assemblyStation.slotPosition(slotIndex);
+		            
+		            // Käskytetään robotti hakemaan se
+		            assemblyStation.initMoveToLego(lego);
+		            
+		            goingToLego = true;
+		            moving = true;
+		        } else {
+		            // Ei enää legoja purettavaksi
+		            freeze = true;
+		            System.out.println("Tyhjennys valmis!");
+		        }
+		    }
 		}
 	 }
  }

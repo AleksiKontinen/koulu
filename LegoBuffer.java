@@ -78,7 +78,7 @@ public class LegoBuffer {
         return (columnIndex - (columnSize - 1) / 2f) * legoSpacingZ;
     }
 
-    private Vector3f getLegoCenterLocation(int index) {
+    public Vector3f getLegoCenterLocation(int index) {
         // Lisätään surfaceHeightiin pieni offset (0.2f), jotta lego on pinnalla
         return new Vector3f(x + xCoord(index), surfaceHeight + 0.4f, z + zCoord(index));
     }
@@ -108,6 +108,12 @@ public class LegoBuffer {
  }
     public boolean LegoAdd(Lego lego) {
     	return legos.add(lego);
+    }
+    public boolean legoKill(Lego lego) {
+    	int index = legos.indexOf(lego);
+    	legos.set(index, null);
+    	
+    	return legos.get(index) == null;
     }
     
 }

@@ -59,7 +59,7 @@ public class AssemblyStation {
 		Vector3f v1;
 		if(Main.firstReady) {
 			v1 = assemblyArm2.getToolTipLocation().clone();
-			System.out.print(v1);
+			
 		}else {
 			v1 = assemblyArm.getToolTipLocation().clone();
 		}
@@ -83,7 +83,7 @@ public class AssemblyStation {
 	public boolean move() { 
 		if (moving) {
 			if(Main.firstReady) {
-				System.out.print("now moving");
+				
 				moving = assemblyArm2.move();
 			}else {
 				moving = assemblyArm.move();
@@ -138,12 +138,8 @@ public class AssemblyStation {
 		float stackXoffset = legoSpacingX * stackXindex;
 		float stackYoffset = yOffset + (stackYindex * legoh);
 		if (Main.stacktype) {
-			if (Main.firstReady) {
-				return new Vector3f(x + xOffset, surfaceHeight+yOffset, z + zOffset - 22);
-			}else{
-				return new Vector3f(x + stackXoffset, surfaceHeight + stackYoffset, z - 6);
-			}
-			
+
+			return new Vector3f(x + stackXoffset, surfaceHeight + stackYoffset, z - 6);
 		}else {
 			return new Vector3f(x + xOffset, surfaceHeight+yOffset, z + zOffset - 12);
 		}
