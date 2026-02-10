@@ -14,14 +14,14 @@ public class AutomationMLReader_skeleton {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		try {
-	        File inputFile = new File("testing_station.aml");
+	        File inputFile = new File("testing_station.aml"); //lisätään tiedosto
 	        //File inputFile = new File("proteusexample.xml");
 	        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 	        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 	        Document doc = dBuilder.parse(inputFile);
 	        doc.getDocumentElement().normalize();
 	        System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
-	        NodeList nList = doc.getElementsByTagName("SystemUnitClass");
+	        NodeList nList = doc.getElementsByTagName("SystemUnitClass"); //haetaan kaikki SystemUnitClass
 	        System.out.println(nList.getLength());
 	        
 	        for (int temp = 0; temp < nList.getLength(); temp++) {
@@ -32,7 +32,7 @@ public class AutomationMLReader_skeleton {
 	        		
 	        		String targetPath = "SystemUnitClassLib/" + componentName;
 	        		System.out.println("\nInternal elements with system unit class " + targetPath);
-	        		NodeList nList2 = doc.getElementsByTagName("InternalElement");
+	        		NodeList nList2 = doc.getElementsByTagName("InternalElement"); //isompi haku
 	        		int length2 = nList2.getLength();
 	        		for (int temp2 = 0; temp2 < length2; temp2++) {
 	        			Node nNode2 = nList2.item(temp2);
